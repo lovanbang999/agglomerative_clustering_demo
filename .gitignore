@@ -1,0 +1,44 @@
+# =====================
+# Python
+# =====================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+protoenv/
+.venv/
+
+# =====================
+# OS / Editor
+# =====================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# =====================
+# Logs & temp
+# =====================
+*.log
+*.tmp
+
+# =====================
+# Outputs (generated results)
+# =====================
+outputs/*
+!outputs/.gitkeep
+
+# =====================
+# Data (tuỳ trường hợp)
+# =====================
+data/*
+!data/.gitkeep
+
+# =====================
+# Jupyter
+# =====================
+.ipynb_checkpoints/
