@@ -26,46 +26,6 @@ def load_custom_css():
             padding-bottom: 0.5rem;
         }
         
-        .info-box {
-            background-color: #e3f2fd;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #2196f3;
-            margin: 1rem 0;
-        }
-        
-        .success-box {
-            background-color: #e8f5e9;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #4caf50;
-            margin: 1rem 0;
-        }
-        
-        .warning-box {
-            background-color: #fff3e0;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #ff9800;
-            margin: 1rem 0;
-        }
-        
-        .code-section {
-            background-color: #f5f5f5;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #9e9e9e;
-            margin: 1rem 0;
-        }
-        
-        .metric-card {
-            background-color: white;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        
         .stButton>button {
             width: 100%;
             border-radius: 0.5rem;
