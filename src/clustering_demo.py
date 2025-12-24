@@ -26,62 +26,52 @@ class ClusteringDemo:
         st.markdown("## 📚 Lý thuyết Agglomerative Clustering")
         
         # Introduction
-        st.markdown("""
-        <div class="info-box">
-        <h3>1️⃣ Agglomerative Clustering là gì?</h3>
-        <p><b>Agglomerative Clustering</b> (phân cụm kết tụ) là thuật toán phân cụm phân cấp 
-        (hierarchical clustering) theo hướng <b>bottom-up</b>:</p>
-        <ul>
-            <li>🔹 Bắt đầu: Mỗi điểm dữ liệu là một cụm riêng</li>
-            <li>🔹 Lặp lại: Gộp hai cụm gần nhất lại với nhau</li>
-            <li>🔹 Kết thúc: Khi đạt số cụm mong muốn hoặc tất cả thành một cụm</li>
-        </ul>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("### 1️⃣ Agglomerative Clustering là gì?")
+        st.info("""
+**Agglomerative Clustering** (phân cụm kết tụ) là thuật toán phân cụm phân cấp (hierarchical clustering) theo hướng **bottom-up**:
+
+- 🔹 **Bắt đầu**: Mỗi điểm dữ liệu là một cụm riêng
+- 🔹 **Lặp lại**: Gộp hai cụm gần nhất lại với nhau
+- 🔹 **Kết thúc**: Khi đạt số cụm mong muốn hoặc tất cả thành một cụm
+        """)
         
         # Linkage methods
-        st.markdown("""
-        <div class="info-box">
-        <h3>2️⃣ Các phương pháp Linkage</h3>
-        <p>Cách đo khoảng cách giữa các cụm:</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("### 2️⃣ Các phương pháp Linkage")
+        st.info("Cách đo khoảng cách giữa các cụm:")
         
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("""
-            **🔸 Ward Linkage**
-            - Tối thiểu hóa phương sai trong cụm
-            - Tạo cụm compact, cân bằng
-            - Chỉ dùng với Euclidean distance
-            - ✅ Thường cho kết quả tốt nhất
-            
-            **🔸 Complete Linkage**
-            - Khoảng cách max giữa các điểm
-            - Tạo cụm compact
-            - Nhạy cảm với outliers
+**🔸 Ward Linkage**
+- Tối thiểu hóa phương sai trong cụm
+- Tạo cụm compact, cân bằng
+- Chỉ dùng với Euclidean distance
+- ✅ Thường cho kết quả tốt nhất
+
+**🔸 Complete Linkage**
+- Khoảng cách **lớn nhất** giữa các điểm thuộc 2 cụm
+- Chỉ gộp khi tất cả các điểm đều tương đối gần nhau
+- Tạo cụm chặt, đồng đều kích thước
+- Nhạy cảm với outliers
             """)
         
         with col2:
             st.markdown("""
-            **🔸 Average Linkage**
-            - Trung bình khoảng cách các cặp
-            - Cân bằng giữa single và complete
-            - Ít nhạy cảm với noise
-            
-            **🔸 Single Linkage**
-            - Khoảng cách min giữa các điểm
-            - Dễ bị "chain effect"
-            - Tốt cho cụm non-convex
+**🔸 Average Linkage**
+- Lấy **trung bình** cộng tất cả khoảng cách giữa các điểm
+- Cân bằng giữa Single và Complete
+- Ít nhạy cảm với noise hơn
+
+**🔸 Single Linkage**
+- Khoảng cách **nhỏ nhất** giữa các điểm thuộc 2 cụm
+- Chỉ cần một cặp điểm gần là hai cụm được gộp
+- Tạo cụm dài, dễ bị "chain effect" (ảnh hưởng bởi nhiễu)
+- Tốt cho cụm hình dạng phức tạp, không lồi (non-convex)
             """)
         
         # Parameters
-        st.markdown("""
-        <div class="info-box">
-        <h3>3️⃣ Tham số chính trong sklearn</h3>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("### 3️⃣ Tham số chính trong sklearn")
         
         params_df = pd.DataFrame({
             'Tham số': [
@@ -125,33 +115,27 @@ print(f"Số lá: {model.n_leaves_}")
         """, language='python')
         
         # Pros and cons
+        st.markdown("### 4️⃣ Ưu điểm và Nhược điểm")
+        
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("""
-            <div class="success-box">
-            <h4>✅ Ưu điểm</h4>
-            <ul>
-                <li>Không cần chỉ định số cụm trước</li>
-                <li>Tạo cấu trúc phân cấp (dendrogram)</li>
-                <li>Phát hiện cụm hình dạng phức tạp</li>
-                <li>Kết quả deterministic</li>
-            </ul>
-            </div>
-            """, unsafe_allow_html=True)
+            st.success("""
+**✅ Ưu điểm:**
+- Không cần chỉ định số cụm trước
+- Tạo cấu trúc phân cấp (dendrogram)
+- Phát hiện cụm hình dạng phức tạp
+- Kết quả deterministic (không ngẫu nhiên)
+            """)
         
         with col2:
-            st.markdown("""
-            <div class="warning-box">
-            <h4>⚠️ Nhược điểm</h4>
-            <ul>
-                <li>Độ phức tạp cao: O(n³) thời gian</li>
-                <li>Không phù hợp dữ liệu lớn</li>
-                <li>Quyết định gộp không thể hoàn tác</li>
-                <li>Nhạy cảm với noise và outliers</li>
-            </ul>
-            </div>
-            """, unsafe_allow_html=True)
+            st.warning("""
+**⚠️ Nhược điểm:**
+- Độ phức tạp cao: O(n³) thời gian
+- Không phù hợp với dữ liệu lớn
+- Quyết định gộp không thể hoàn tác
+- Nhạy cảm với noise và outliers
+            """)
     
     def show_basic_demo(self):
         """Basic demonstration"""
@@ -332,16 +316,13 @@ labels = model.fit_predict(X)
                 
                 st.dataframe(metrics_df, use_container_width=True)
                 
-                st.markdown("""
-                <div class="info-box">
-                <h4>📌 Cách đọc metrics:</h4>
-                <ul>
-                    <li><b>Silhouette Score</b>: Càng cao càng tốt (từ -1 đến 1)</li>
-                    <li><b>Davies-Bouldin</b>: Càng thấp càng tốt (≥ 0)</li>
-                    <li><b>Calinski-Harabasz</b>: Càng cao càng tốt (≥ 0)</li>
-                </ul>
-                </div>
-                """, unsafe_allow_html=True)
+                st.info("""
+**📌 Cách đọc metrics:**
+
+- **Silhouette Score**: Càng cao càng tốt (từ -1 đến 1)
+- **Davies-Bouldin**: Càng thấp càng tốt (≥ 0)
+- **Calinski-Harabasz**: Càng cao càng tốt (≥ 0)
+                """)
     
     def show_parameter_analysis(self):
         """Analyze effect of parameters"""
@@ -406,11 +387,7 @@ labels = model.fit_predict(X)
         """Analyze connectivity constraint effect"""
         st.markdown("### 🔗 Ảnh hưởng của Connectivity")
         
-        st.markdown("""
-        <div class="info-box">
-        <p><b>Connectivity matrix</b> xác định các điểm nào có thể được gộp với nhau dựa trên cấu trúc không gian.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.info("**Connectivity matrix** xác định các điểm nào có thể được gộp với nhau dựa trên cấu trúc không gian.")
         
         col1, col2 = st.columns(2)
         
