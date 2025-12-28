@@ -44,7 +44,6 @@ def main():
             "📚 Lý thuyết",
             "🎯 Demo cơ bản", 
             "🔍 So sánh Linkage",
-            "⚙️ Tham số",
             "🌍 Ứng dụng thực tế"
         ]
     )
@@ -67,8 +66,6 @@ def main():
         demo.show_basic_demo()
     elif page == "🔍 So sánh Linkage":
         demo.show_linkage_comparison()
-    elif page == "⚙️ Tham số":
-        demo.show_parameter_analysis()
     elif page == "🌍 Ứng dụng thực tế":
         demo.show_real_world_application()
 

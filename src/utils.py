@@ -65,6 +65,9 @@ def generate_dataset(dataset_type, n_samples=300, random_state=42):
             random_state=random_state,
             cluster_std=0.6
         )
+        print('===== data blobs =====')
+        print("X: ", X)
+        print("y: ", y)
     
     elif dataset_type == 'moons':
         X, y = make_moons(
@@ -72,6 +75,9 @@ def generate_dataset(dataset_type, n_samples=300, random_state=42):
             noise=0.1,
             random_state=random_state
         )
+        print('===== data moons =====')
+        print("X: ", X)
+        print("y: ", y)
     
     elif dataset_type == 'circles':
         X, y = make_circles(
@@ -80,6 +86,9 @@ def generate_dataset(dataset_type, n_samples=300, random_state=42):
             factor=0.5,
             random_state=random_state
         )
+        print('===== data circles =====')
+        print("X: ", X)
+        print("y: ", y)
     
     elif dataset_type == 'anisotropic':
         X, y = make_blobs(
@@ -88,9 +97,15 @@ def generate_dataset(dataset_type, n_samples=300, random_state=42):
             n_features=2,
             random_state=random_state
         )
+        print('===== data anisotropic before transformation =====')
+        print("X: ", X)
+        print("y: ", y)
+
         # Apply transformation
         transformation = [[0.6, -0.6], [-0.4, 0.8]]
         X = np.dot(X, transformation)
+        print('===== data anisotropic after transformation =====')
+        print("X: ", X)
     
     else:
         raise ValueError(f"Unknown dataset type: {dataset_type}")
