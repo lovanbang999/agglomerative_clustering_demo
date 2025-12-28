@@ -47,7 +47,7 @@ class ClusteringDemo:
 - Tối thiểu hóa phương sai trong cụm
 - Tạo cụm compact, cân bằng
 - Chỉ dùng với Euclidean distance
-- ✅ Thường cho kết quả tốt nhất
+- Thường cho kết quả tốt nhất
 
 **🔸 Complete Linkage**
 - Khoảng cách **lớn nhất** giữa các điểm thuộc 2 cụm
@@ -166,7 +166,7 @@ print(f"Số lá: {model.n_leaves_}")
         with col3:
             linkage = st.selectbox(
                 "Linkage:",
-                ['ward', 'complete', 'average', 'single']
+                ['ward', 'average', 'complete', 'single']
             )
         
         n_samples = st.slider("Số mẫu:", 100, 500, 300, 50)
@@ -198,6 +198,7 @@ labels = model.fit_predict(X)
                     linkage=linkage
                 )
                 labels = model.fit_predict(X)
+                print('===> Label: ', labels)
                 
                 # Metrics
                 st.markdown("### 📊 Kết quả")
@@ -209,15 +210,15 @@ labels = model.fit_predict(X)
                 
                 with col2:
                     silhouette = silhouette_score(X, labels)
-                    st.metric("Silhouette", f"{silhouette:.3f}")
+                    st.metric("Silhouette (Độ tách biệt)", f"{silhouette:.3f}")
                 
                 with col3:
                     davies_bouldin = davies_bouldin_score(X, labels)
-                    st.metric("Davies-Bouldin", f"{davies_bouldin:.3f}")
+                    st.metric("Davies-Bouldin (Độ chồng lấn)", f"{davies_bouldin:.3f}")
                 
                 with col4:
                     calinski = calinski_harabasz_score(X, labels)
-                    st.metric("Calinski-Harabasz", f"{calinski:.1f}")
+                    st.metric("Calinski-Harabasz (giữa-cluster / trong-cluster)", f"{calinski:.1f}")
                 
                 # Visualizations
                 st.markdown("### 📈 Visualization")
@@ -266,8 +267,8 @@ labels = model.fit_predict(X)
             n_clusters = st.slider("Số cụm:", 2, 5, 3, key='comp_clusters')
             linkage_methods = st.multiselect(
                 "Chọn linkage methods:",
-                ['ward', 'complete', 'average', 'single'],
-                default=['ward', 'complete', 'average']
+                ['ward', 'average', 'complete', 'single'],
+                default=['ward', 'average', 'complete']
             )
         
         if st.button("🔄 So sánh", type="primary"):
@@ -324,130 +325,6 @@ labels = model.fit_predict(X)
 - **Calinski-Harabasz**: Càng cao càng tốt (≥ 0)
                 """)
     
-    def show_parameter_analysis(self):
-        """Analyze effect of parameters"""
-        st.markdown("## ⚙️ Phân Tích Tham Số")
-        
-        tab1, tab2 = st.tabs(["📊 Số cụm", "🔗 Connectivity"])
-        
-        with tab1:
-            self._analyze_n_clusters()
-        
-        with tab2:
-            self._analyze_connectivity()
-    
-    def _analyze_n_clusters(self):
-        """Analyze optimal number of clusters"""
-        st.markdown("### 📊 Tìm số cụm tối ưu")
-        
-        st.info("💡 Sử dụng metrics để tìm số cụm phù hợp")
-        
-        if st.button("📈 Phân tích", type="primary", key='analyze_k'):
-            with st.spinner("Đang phân tích..."):
-                # Generate data
-                X, _ = generate_dataset('blobs', 300)
-                
-                # Test range
-                cluster_range = range(2, 9)
-                metrics_dict = {
-                    'silhouette': [],
-                    'davies_bouldin': [],
-                    'calinski_harabasz': []
-                }
-                
-                # Progress bar
-                progress_bar = st.progress(0)
-                
-                for idx, k in enumerate(cluster_range):
-                    model = AgglomerativeClustering(n_clusters=k, linkage='ward')
-                    labels = model.fit_predict(X)
-                    
-                    metrics_dict['silhouette'].append(silhouette_score(X, labels))
-                    metrics_dict['davies_bouldin'].append(davies_bouldin_score(X, labels))
-                    metrics_dict['calinski_harabasz'].append(calinski_harabasz_score(X, labels))
-                    
-                    progress_bar.progress((idx + 1) / len(cluster_range))
-                
-                # Plot
-                fig = self.visualizer.plot_metrics_comparison(cluster_range, metrics_dict)
-                st.pyplot(fig)
-                plt.close()
-                
-                # Table
-                st.markdown("### 📋 Bảng kết quả")
-                results_df = pd.DataFrame({
-                    'k': list(cluster_range),
-                    'Silhouette': [f"{x:.3f}" for x in metrics_dict['silhouette']],
-                    'Davies-Bouldin': [f"{x:.3f}" for x in metrics_dict['davies_bouldin']],
-                    'Calinski-Harabasz': [f"{x:.1f}" for x in metrics_dict['calinski_harabasz']]
-                })
-                st.dataframe(results_df, use_container_width=True)
-    
-    def _analyze_connectivity(self):
-        """Analyze connectivity constraint effect"""
-        st.markdown("### 🔗 Ảnh hưởng của Connectivity")
-        
-        st.info("**Connectivity matrix** xác định các điểm nào có thể được gộp với nhau dựa trên cấu trúc không gian.")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            n_neighbors = st.slider("Số láng giềng (k):", 2, 20, 10)
-        with col2:
-            n_clusters = st.slider("Số cụm:", 2, 5, 2, key='conn_k')
-        
-        if st.button("🔗 So sánh", type="primary", key='compare_conn'):
-            with st.spinner("Đang so sánh..."):
-                # Generate moon data
-                X, _ = generate_dataset('moons', 300)
-                
-                # Create connectivity
-                connectivity = kneighbors_graph(
-                    X, n_neighbors=n_neighbors, include_self=False
-                )
-                
-                # Compare
-                fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-                
-                # Without connectivity
-                model1 = AgglomerativeClustering(n_clusters=n_clusters, linkage='average')
-                labels1 = model1.fit_predict(X)
-                
-                scatter1 = axes[0].scatter(
-                    X[:, 0], X[:, 1], c=labels1, cmap='viridis',
-                    s=60, alpha=0.7, edgecolors='black', linewidth=0.8
-                )
-                axes[0].set_title('Không có Connectivity', fontsize=14, fontweight='bold')
-                axes[0].set_xlabel('Feature 1', fontsize=12)
-                axes[0].set_ylabel('Feature 2', fontsize=12)
-                axes[0].grid(True, alpha=0.3)
-                plt.colorbar(scatter1, ax=axes[0])
-                
-                # With connectivity
-                model2 = AgglomerativeClustering(
-                    n_clusters=n_clusters,
-                    linkage='average',
-                    connectivity=connectivity
-                )
-                labels2 = model2.fit_predict(X)
-                
-                scatter2 = axes[1].scatter(
-                    X[:, 0], X[:, 1], c=labels2, cmap='viridis',
-                    s=60, alpha=0.7, edgecolors='black', linewidth=0.8
-                )
-                axes[1].set_title(f'Với Connectivity (k={n_neighbors})', 
-                                fontsize=14, fontweight='bold')
-                axes[1].set_xlabel('Feature 1', fontsize=12)
-                axes[1].set_ylabel('Feature 2', fontsize=12)
-                axes[1].grid(True, alpha=0.3)
-                plt.colorbar(scatter2, ax=axes[1])
-                
-                plt.tight_layout()
-                st.pyplot(fig)
-                plt.close()
-                
-                st.success("✅ Connectivity giúp thuật toán tôn trọng cấu trúc không gian!")
-    
     def show_real_world_application(self):
         """Show real-world application"""
         st.markdown("## 🌍 Ứng Dụng Thực Tế: Phân Khúc Khách Hàng")
@@ -469,7 +346,7 @@ labels = model.fit_predict(X)
         df = pd.DataFrame(X, columns=['Chi tiêu (USD)', 'Tần suất mua (lần/tháng)'])
         df['Khách hàng ID'] = [f'KH{i:04d}' for i in range(200)]
         
-        st.dataframe(df.head(10), use_container_width=True)
+        st.dataframe(df.head(200), use_container_width=True)
         
         # Parameters
         col1, col2 = st.columns(2)
@@ -477,7 +354,7 @@ labels = model.fit_predict(X)
         with col1:
             n_segments = st.slider("Số phân khúc:", 2, 5, 3)
         with col2:
-            linkage = st.selectbox("Linkage:", ['ward', 'complete', 'average'], key='app_linkage')
+            linkage = st.selectbox("Linkage:", ['ward', 'complete', 'average', 'single'], key='app_linkage')
         
         if st.button("🎯 Phân khúc", type="primary"):
             with st.spinner("Đang phân tích..."):
